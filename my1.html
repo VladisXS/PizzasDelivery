@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка піци</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+        }
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            color: #ff6f61;
+        }
+        #language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        #language-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #language-dropdown button {
+            display: block;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            padding: 5px 10px;
+            width: 100%;
+            text-align: left;
+        }
+        #language-dropdown button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            color: #ff6f61;
+        }
+        .container {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 10px;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .menu-item h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #ff6f61;
+        }
+        .menu-item p {
+            margin: 5px 0;
+        }
+        .menu-item .price {
+            font-size: 1.2em;
+            color: #ff6f61;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .order-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .order-form input, .order-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .order-form button {
+            padding: 10px 20px;
+            background: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .order-form button:hover {
+            background: #e65a50;
+        }
+        .order-list {
+            margin-top: 20px;
+        }
+        .order-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .order-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .order-list .button-group {
+            display: flex;
+            gap: 5px;
+        }
+        .order-list button {
+            background: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .order-list button:hover {
+            background: #e65a50;
+        }
+        .order-button {
+            display: none;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .order-button:hover {
+            background: #e65a50;
+        }
+        .history {
+            margin-top: 20px;
+        }
+        .history h2 {
+            margin-bottom: 10px;
+        }
+        .history ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .history li {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .delivery-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="headerTitle">🍕 Доставка піци</h1>
+        <div id="language-switcher" onclick="toggleLanguageDropdown()">🌍</div>
+        <div id="language-dropdown">
+            <button onclick="changeLanguage('uk')">Українська</button>
+            <button onclick="changeLanguage('en')">English</button>
+        </div>
+    </header>
+    <nav>
+        <a href="#menu" id="menuLink">Меню</a>
+        <a href="#about" id="aboutLink">Про нас</a>
+        <a href="#contact" id="contactLink">Контакти</a>
+        <a href="#history" id="historyLink">Історія замовлень</a>
+    </nav>
+    <div class="container" id="menu">
+        <h2 id="menuTitle">Наше меню</h2>
+        <div class="menu-item" onclick="addPizzaToOrder('Маргарита', 120)">
+            <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Маргарита">
+            <div>
+                <h3 id="pizza1">Маргарита</h3>
+                <p id="pizza1Desc">Томатний соус, моцарела, базилік</p>
+                <p class="price">120 грн</p>
+            </div>
+        </div>
+        <div class="menu-item" onclick="addPizzaToOrder('Пепероні', 150)">
+            <img src="https://images.unsplash.com/photo-1593504049359-74330189a345?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Пепероні">
+            <div>
+                <h3 id="pizza2">Пепероні</h3>
+                <p id="pizza2Desc">Томатний соус, моцарела, пепероні</p>
+                <p class="price">150 грн</p>
+            </div>
+        </div>
+        <div class="menu-item" onclick="addPizzaToOrder('Гавайська', 130)">
+            <img src="https://images.unsplash.com/photo-1601924582970-9238bcb495d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Гавайська">
+            <div>
+                <h3 id="pizza3">Гавайська</h3>
+                <p id="pizza3Desc">Томатний соус, моцарела, курка, ананас</p>
+                <p class="price">130 грн</p>
+            </div>
+        </div>
+        <div class="menu-item" onclick="addPizzaToOrder('4 сири', 140)">
+            <img src="https://images.unsplash.com/photo-1579751626657-72bc17010498?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="4 сири">
+            <div>
+                <h3 id="pizza4">4 сири</h3>
+                <p id="pizza4Desc">Томатний соус, моцарела, пармезан, горгонзола, чеддер</p>
+                <p class="price">140 грн</p>
+            </div>
+        </div>
+
+        <!-- Список замовлень -->
+        <div class="order-list" id="orderList">
+            <h2 id="orderTitle">Ваше замовлення</h2>
+            <ul id="orderItems"></ul>
+            <p id="totalText">Загальна сума: <span id="totalPrice">0</span> грн</p>
+        </div>
+
+        <!-- Кнопка "Заказати" -->
+        <button class="order-button" id="orderButton" onclick="showOrderForm()">Заказати</button>
+
+        <!-- Форма для замовлення -->
+        <div class="order-form" id="orderForm">
+            <h2 id="orderFormTitle">Оформлення замовлення</h2>
+            <input type="text" id="name" placeholder="Ваше ім'я" required>
+            <input type="text" id="address" placeholder="Адреса доставки" required>
+            <textarea id="notes" placeholder="Додаткові побажання (не обов'язково)"></textarea>
+            <button onclick="placeOrder()" id="placeOrderButton">Замовити</button>
+        </div>
+
+        <!-- Повідомлення про час доставки -->
+        <div class="delivery-message" id="deliveryMessage">
+            Дякуємо! Ваша піца буде готова та доставлена за 30-35 хвилин.
+        </div>
+    </div>
+    <div class="container" id="about">
+        <h2 id="aboutTitle">Про нас</h2>
+        <p id="aboutText">Ми - піцерія, яка готує найсмачнішу піцу з натуральних інгредієнтів. Наша місія - дарувати вам радість і задоволення від кожного шматочка!</p>
+    </div>
+    <div class="container" id="contact">
+        <h2 id="contactTitle">Контакти</h2>
+        <p>📞 Phone Number: +380 123 456 789</p>
+        <p>📧 Email: info@pizzadelivery.com</p>
+        <p id="addressText">🏠 Адреса: вул. Піцерійна, 1, м. Київ</p>
+    </div>
+    <div class="container history" id="history">
+        <h2 id="historyTitle">Історія замовлень</h2>
+        <ul id="historyItems"></ul>
+    </div>
+    <footer>
+        <p id="footerText">© 2023 Доставка піци. Усі права захищені.</p>
+    </footer>
+
+    <script>
+        let currentLanguage = 'uk'; // Поточна мова
+        let order = []; // Поточне замовлення
+        let totalPrice = 0; // Загальна сума замовлення
+        let orderHistory = []; // Історія замовлень
+
+        const translations = {
+            'uk': {
+                'headerTitle': '🍕 Доставка піци',
+                'menu': 'Меню',
+                'about': 'Про нас',
+                'contact': 'Контакти',
+                'history': 'Історія замовлень',
+                'menuTitle': 'Наше меню',
+                'pizza1': 'Маргарита',
+                'pizza1Desc': 'Томатний соус, моцарела, базилік',
+                'pizza2': 'Пепероні',
+                'pizza2Desc': 'Томатний соус, моцарела, пепероні',
+                'pizza3': 'Гавайська',
+                'pizza3Desc': 'Томатний соус, моцарела, курка, ананас',
+                'pizza4': '4 сири',
+                'pizza4Desc': 'Томатний соус, моцарела, пармезан, горгонзола, чеддер',
+                'order': 'Ваше замовлення',
+                'total': 'Загальна сума',
+                'place_order': 'Заказати',
+                'delivery_message': 'Дякуємо! Ваша піца буде готова та доставлена за 30-35 хвилин.',
+                'name_placeholder': 'Ваше ім\'я',
+                'address_placeholder': 'Адреса доставки',
+                'notes_placeholder': 'Додаткові побажання (не обов\'язково)',
+                'order_button': 'Замовити',
+                'orderFormTitle': 'Оформлення замовлення',
+                'aboutTitle': 'Про нас',
+                'aboutText': 'Ми - піцерія, яка готує найсмачнішу піцу з натуральних інгредієнтів. Наша місія - дарувати вам радість і задоволення від кожного шматочка!',
+                'contactTitle': 'Контакти',
+                'addressText': '🏠 Адреса: вул. Піцерійна, 1, м. Київ',
+                'historyTitle': 'Історія замовлень',
+                'footerText': '© 2023 Доставка піци. Усі права захищені.'
+            },
+            'en': {
+                'headerTitle': '🍕 Pizza Delivery',
+                'menu': 'Menu',
+                'about': 'About Us',
+                'contact': 'Contact',
+                'history': 'Order History',
+                'menuTitle': 'Our Menu',
+                'pizza1': 'Margherita',
+                'pizza1Desc': 'Tomato sauce, mozzarella, basil',
+                'pizza2': 'Pepperoni',
+                'pizza2Desc': 'Tomato sauce, mozzarella, pepperoni',
+                'pizza3': 'Hawaiian',
+                'pizza3Desc': 'Tomato sauce, mozzarella, chicken, pineapple',
+                'pizza4': '4 Cheeses',
+                'pizza4Desc': 'Tomato sauce, mozzarella, parmesan, gorgonzola, cheddar',
+                'order': 'Your Order',
+                'total': 'Total',
+                'place_order': 'Order',
+                'delivery_message': 'Thank you! Your pizza will be ready and delivered in 30-35 minutes.',
+                'name_placeholder': 'Your Name',
+                'address_placeholder': 'Delivery Address',
+                'notes_placeholder': 'Additional Notes (optional)',
+                'order_button': 'Place Order',
+                'orderFormTitle': 'Place Order',
+                'aboutTitle': 'About Us',
+                'aboutText': 'We are a pizzeria that prepares the most delicious pizza from natural ingredients. Our mission is to give you joy and pleasure with every bite!',
+                'contactTitle': 'Contact',
+                'addressText': '🏠 Address: Pizza Street, 1, Kyiv',
+                'historyTitle': 'Order History',
+                'footerText': '© 2023 Pizza Delivery. All rights reserved.'
+            }
+        };
+
+        // Показ/приховування випадаючого меню
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('language-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Зміна мови
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            updateLanguage();
+            updatePrices();
+            toggleLanguageDropdown(); // Закрити випадаюче меню після вибору
+        }
+
+        // Оновлення тексту на сторінці
+        function updateLanguage() {
+            document.getElementById('headerTitle').textContent = translations[currentLanguage]['headerTitle'];
+            document.getElementById('menuLink').textContent = translations[currentLanguage]['menu'];
+            document.getElementById('aboutLink').textContent = translations[currentLanguage]['about'];
+            document.getElementById('contactLink').textContent = translations[currentLanguage]['contact'];
+            document.getElementById('historyLink').textContent = translations[currentLanguage]['history'];
+            document.getElementById('menuTitle').textContent = translations[currentLanguage]['menuTitle'];
+            document.getElementById('pizza1').textContent = translations[currentLanguage]['pizza1'];
+            document.getElementById('pizza1Desc').textContent = translations[currentLanguage]['pizza1Desc'];
+            document.getElementById('pizza2').textContent = translations[currentLanguage]['pizza2'];
+            document.getElementById('pizza2Desc').textContent = translations[currentLanguage]['pizza2Desc'];
+            document.getElementById('pizza3').textContent = translations[currentLanguage]['pizza3'];
+            document.getElementById('pizza3Desc').textContent = translations[currentLanguage]['pizza3Desc'];
+            document.getElementById('pizza4').textContent = translations[currentLanguage]['pizza4'];
+            document.getElementById('pizza4Desc').textContent = translations[currentLanguage]['pizza4Desc'];
+            document.getElementById('orderTitle').textContent = translations[currentLanguage]['order'];
+            document.getElementById('totalText').innerHTML = `${translations[currentLanguage]['total']}: <span id="totalPrice">0</span> ${currentLanguage === 'uk' ? 'грн' : '€'}`;
+            document.getElementById('orderButton').textContent = translations[currentLanguage]['place_order'];
+            document.getElementById('deliveryMessage').textContent = translations[currentLanguage]['delivery_message'];
+            document.getElementById('name').placeholder = translations[currentLanguage]['name_placeholder'];
+            document.getElementById('address').placeholder = translations[currentLanguage]['address_placeholder'];
+            document.getElementById('notes').placeholder = translations[currentLanguage]['notes_placeholder'];
+            document.getElementById('placeOrderButton').textContent = translations[currentLanguage]['order_button'];
+            document.getElementById('orderFormTitle').textContent = translations[currentLanguage]['orderFormTitle'];
+            document.getElementById('aboutTitle').textContent = translations[currentLanguage]['aboutTitle'];
+            document.getElementById('aboutText').textContent = translations[currentLanguage]['aboutText'];
+            document.getElementById('contactTitle').textContent = translations[currentLanguage]['contactTitle'];
+            document.getElementById('addressText').textContent = translations[currentLanguage]['addressText'];
+            document.getElementById('historyTitle').textContent = translations[currentLanguage]['historyTitle'];
+            document.getElementById('footerText').textContent = translations[currentLanguage]['footerText'];
+        }
+
+        // Конвертація цін у євро
+        function convertToEuro(priceInUAH) {
+            const exchangeRate = 40; // Курс обміну
+            return (priceInUAH / exchangeRate).toFixed(2);
+        }
+
+        // Оновлення цін на сторінці
+        function updatePrices() {
+            const prices = document.querySelectorAll('.price');
+            prices.forEach(priceElement => {
+                const priceInUAH = parseFloat(priceElement.textContent);
+                if (!isNaN(priceInUAH)) {
+                    const priceInEuro = convertToEuro(priceInUAH);
+                    priceElement.textContent = currentLanguage === 'uk' ? `${priceInUAH} грн` : `€${priceInEuro}`;
+                }
+            });
+
+            const totalPriceElement = document.getElementById('totalPrice');
+            const totalPriceInUAH = parseFloat(totalPriceElement.textContent);
+            if (!isNaN(totalPriceInUAH)) {
+                const totalPriceInEuro = convertToEuro(totalPriceInUAH);
+                totalPriceElement.textContent = currentLanguage === 'uk' ? `${totalPriceInUAH} грн` : `€${totalPriceInEuro}`;
+            }
+        }
+
+        // Додавання піци до замовлення
+        function addPizzaToOrder(pizzaName, price) {
+            let pizzaNameTranslated = pizzaName;
+            if (currentLanguage === 'en') {
+                const translationKey = Object.keys(translations['en']).find(key => translations['en'][key] === pizzaName);
+                if (translationKey) {
+                    pizzaNameTranslated = translations['en'][translationKey];
+                } else {
+                    pizzaNameTranslated = pizzaName; // Якщо переклад не знайдено, залишаємо оригінальну назву
+                }
+            }
+
+            const existingPizza = order.find(item => item.name === pizzaNameTranslated);
+
+            if (existingPizza) {
+                existingPizza.quantity += 1;
+            } else {
+                order.push({ name: pizzaNameTranslated, price: price, quantity: 1 });
+            }
+
+            totalPrice += price;
+            updateOrderList();
+            document.getElementById('orderButton').style.display = 'block';
+            updatePrices();
+        }
+
+        // Видалення однієї піци з замовлення
+        function removeOnePizzaFromOrder(index) {
+            const pizza = order[index];
+            if (pizza.quantity > 1) {
+                pizza.quantity -= 1;
+                totalPrice -= pizza.price;
+            } else {
+                order.splice(index, 1);
+                totalPrice -= pizza.price;
+            }
+            updateOrderList();
+
+            if (order.length === 0) {
+                document.getElementById('orderButton').style.display = 'none';
+            }
+            updatePrices();
+        }
+
+        // Видалення піци з замовлення
+        function removePizzaFromOrder(index) {
+            const removedPizza = order[index];
+            totalPrice -= removedPizza.price * removedPizza.quantity;
+            order.splice(index, 1);
+            updateOrderList();
+
+            if (order.length === 0) {
+                document.getElementById('orderButton').style.display = 'none';
+            }
+            updatePrices();
+        }
+
+        // Оновлення списку замовлень
+        function updateOrderList() {
+            const orderItems = document.getElementById('orderItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+            orderItems.innerHTML = '';
+            order.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${item.name} x${item.quantity} - ${item.price * item.quantity} ${currentLanguage === 'uk' ? 'грн' : '€'}
+                    <div class="button-group">
+                        <button onclick="removeOnePizzaFromOrder(${index})">-1</button>
+                        <button onclick="removePizzaFromOrder(${index})">${currentLanguage === 'uk' ? 'Видалити' : 'Remove'}</button>
+                    </div>
+                `;
+                orderItems.appendChild(li);
+            });
+            totalPriceElement.textContent = currentLanguage === 'uk' ? `${totalPrice} грн` : `€${convertToEuro(totalPrice)}`;
+        }
+
+        // Показ форми замовлення
+        function showOrderForm() {
+            document.getElementById('orderForm').style.display = 'block';
+        }
+
+        // Оформлення замовлення
+        function placeOrder() {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const notes = document.getElementById('notes').value;
+
+            if (name && address && order.length > 0) {
+                const orderSummary = {
+                    name: name,
+                    address: address,
+                    notes: notes || (currentLanguage === 'uk' ? "Немає додаткових побажань" : "No additional notes"),
+                    order: order,
+                    totalPrice: totalPrice,
+                    date: new Date().toLocaleString()
+                };
+
+                orderHistory.push(orderSummary);
+                document.getElementById('deliveryMessage').style.display = 'block';
+
+                order = [];
+                totalPrice = 0;
+                updateOrderList();
+                document.getElementById('orderForm').style.display = 'none';
+                document.getElementById('orderButton').style.display = 'none';
+                updateOrderHistory();
+            } else {
+                alert(currentLanguage === 'uk' ? 'Будь ласка, заповніть обов\'язкові поля та додайте піцу до замовлення.' : 'Please fill in the required fields and add pizza to the order.');
+            }
+        }
+        // Додавання піци до замовлення
+function addPizzaToOrder(pizzaName, price) {
+    let pizzaNameTranslated = pizzaName;
+    if (currentLanguage === 'en') {
+        // Знаходимо переклад назви піци для англійської мови
+        const translationKey = Object.keys(translations['en']).find(key => translations['uk'][key] === pizzaName);
+        if (translationKey) {
+            pizzaNameTranslated = translations['en'][translationKey];
+        } else {
+            pizzaNameTranslated = pizzaName; // Якщо переклад не знайдено, залишаємо оригінальну назву
+        }
+    }
+
+    const existingPizza = order.find(item => item.name === pizzaNameTranslated);
+
+    if (existingPizza) {
+        existingPizza.quantity += 1;
+    } else {
+        order.push({ name: pizzaNameTranslated, price: price, quantity: 1 });
+    }
+
+    totalPrice += price;
+    updateOrderList();
+    document.getElementById('orderButton').style.display = 'block';
+    updatePrices();
+}
+
+        // Оновлення історії замовлень
+        function updateOrderHistory() {
+            const historyItems = document.getElementById('historyItems');
+            historyItems.innerHTML = '';
+            orderHistory.forEach((order, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${currentLanguage === 'uk' ? 'Замовлення' : 'Order'} #${index + 1}</strong><br>
+                    ${currentLanguage === 'uk' ? 'Ім\'я' : 'Name'}: ${order.name}<br>
+                    ${currentLanguage === 'uk' ? 'Адреса' : 'Address'}: ${order.address}<br>
+                    ${currentLanguage === 'uk' ? 'Побажання' : 'Notes'}: ${order.notes}<br>
+                    ${currentLanguage === 'uk' ? 'Замовлення' : 'Order'}: ${order.order.map(item => `${item.name} x${item.quantity} - ${item.price * item.quantity} ${currentLanguage === 'uk' ? 'грн' : '€'}`).join(', ')}<br>
+                    ${currentLanguage === 'uk' ? 'Загальна сума' : 'Total'}: ${order.totalPrice} ${currentLanguage === 'uk' ? 'грн' : '€'}<br>
+                    ${currentLanguage === 'uk' ? 'Дата' : 'Date'}: ${order.date}
+                `;
+                historyItems.appendChild(li);
+            });
+        }
+
+        // Оновлення історії при завантаженні сторінки
+        updateOrderHistory();
+    </script>
+</body>
+</html>
