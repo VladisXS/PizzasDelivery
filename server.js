@@ -19,18 +19,38 @@ function readOrders() {
   if (!fs.existsSync(ordersFilePath)) {
     fs.writeFileSync(ordersFilePath, '[]'); // Створюємо порожній файл, якщо його немає
   }
-  const data = fs.readFileSync(ordersFilePath, 'utf-8');
-  return JSON.parse(data);
+  try {
+    const data = fs.readFileSync(ordersFilePath, 'utf-8');
+    if (!data.trim()) {
+      return []; // Повертаємо пустий масив, якщо файл порожній
+    }
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Помилка читання або парсингу файлу:', err);
+    return []; // Повертаємо пустий масив у разі помилки
+  }
 }
 
 // Функція для збереження замовлень у файл
 function saveOrders(orders) {
-  fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
+  try {
+    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
+  } catch (err) {
+    console.error('Помилка збереження файлу:', err);
+  }
 }
 
 // Маршрут для збереження замовлення
 app.post('/api/orders', (req, res) => {
+  console.log('Отримано запит на збереження замовлення:', req.body);
+
   const { name, address, notes, totalPrice, items } = req.body;
+
+  // Перевірка наявності обов'язкових полів
+  if (!name || !address || !items || !totalPrice) {
+    return res.status(400).json({ success: false, message: 'Не всі обов\'язкові поля заповнені!' });
+  }
+
   const date = new Date().toLocaleString();
 
   const newOrder = {
