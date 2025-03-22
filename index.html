@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка піци</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1 id="headerTitle">🍕 Доставка піци</h1>
+        <div id="language-switcher" onclick="toggleLanguageDropdown()">🌍</div>
+        <div id="language-dropdown">
+            <button onclick="changeLanguage('uk')">Українська</button>
+            <button onclick="changeLanguage('en')">English</button>
+        </div>
+        <div id="filter-icon" onclick="toggleFilterDropdown()">☰</div>
+        <div id="filter-dropdown">
+            <button onclick="filterPizzas('all')">Усі</button>
+            <button onclick="filterPizzas('vegetarian')">Вегетаріанські</button>
+            <button onclick="filterPizzas('meat')">М'ясні</button>
+            <button onclick="filterPizzas('spicy')">Гострі</button>
+        </div>
+    </header>
+    <nav>
+        <a href="#menu" id="menuLink">Меню</a>
+        <a href="#about" id="aboutLink">Про нас</a>
+        <a href="#contact" id="contactLink">Контакти</a>
+        <a href="#history" id="historyLink">Історія замовлень</a>
+    </nav>
+    <div class="container" id="menu">
+        <h2 id="menuTitle">Наше меню</h2>
+        <input type="text" id="searchInput" placeholder="Пошук піци..." oninput="searchPizzas()">
+        <div id="pizzaList"></div>
+        <div class="order-list" id="orderList">
+            <h2 id="orderTitle">Ваше замовлення</h2>
+            <ul id="orderItems"></ul>
+            <p id="totalText">Загальна сума: <span id="totalPrice">0</span> грн</p>
+            <button class="clear-order-button" id="clearOrderButton" onclick="clearOrder()">Очистити замовлення</button>
+        </div>
+        <button class="order-button" id="orderButton" onclick="showOrderForm()">Заказати</button>
+        <div class="order-form" id="orderForm">
+            <h2 id="orderFormTitle">Оформлення замовлення</h2>
+            <input type="text" id="name" placeholder="Ваше ім'я" required>
+            <input type="text" id="address" placeholder="Адреса доставки" required>
+            <textarea id="notes" placeholder="Додаткові побажання (не обов'язково)"></textarea>
+            <button onclick="placeOrder()" id="placeOrderButton">Замовити</button>
+        </div>
+        <div class="delivery-message" id="deliveryMessage">
+            Дякуємо! Ваша піца буде готова та доставлена за 30-35 хвилин.
+        </div>
+    </div>
+    <div class="container" id="about">
+        <h2 id="aboutTitle">Про нас</h2>
+        <p id="aboutText">Ми - піцерія, яка готує найсмачнішу піцу з натуральних інгредієнтів. Наша місія - дарувати вам радість і задоволення від кожного шматочка!</p>
+    </div>
+    <div class="container" id="contact">
+        <h2 id="contactTitle">Контакти</h2>
+        <p>📞 Phone Number: +380 123 456 789</p>
+        <p>📧 Email: info@pizzadelivery.com</p>
+        <p id="addressText">🏠 Адреса: вул. Піцерійна, 1, м. Київ</p>
+    </div>
+    <div class="container history" id="history">
+        <h2 id="historyTitle">Історія замовлень</h2>
+        <ul id="historyItems"></ul>
+    </div>
+    <footer>
+        <p id="footerText">© 2023 Доставка піци. Усі права захищені.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
