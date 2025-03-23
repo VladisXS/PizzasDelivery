@@ -9,11 +9,7 @@ const port = 3000;
 
 // Middleware для обробки JSON та CORS
 app.use(bodyParser.json());
-app.use(cors({
-  origin: '*', // Дозволяє всі домени (для тестування). Заміни на конкретний домен у продакшені.
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-}));
+app.use(cors());
 
 // Шлях до файлу з замовленнями
 const ordersFilePath = path.join(__dirname, 'orders.json');
@@ -39,7 +35,6 @@ function readOrders() {
 function saveOrders(orders) {
   try {
     fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
-    console.log('Файл успішно збережено:', ordersFilePath);
   } catch (err) {
     console.error('Помилка збереження файлу:', err);
   }
@@ -48,13 +43,6 @@ function saveOrders(orders) {
 // Маршрут для збереження замовлення
 app.post('/api/orders', (req, res) => {
   console.log('Отримано запит на збереження замовлення:', req.body);
-  console.log('User-Agent:', req.headers['user-agent']);
-  console.log('Content-Type:', req.headers['content-type']);
-
-  // Перевірка, чи дані надійшли у форматі JSON
-  if (!req.is('application/json')) {
-    return res.status(400).json({ success: false, message: 'Невірний формат даних. Очікується JSON.' });
-  }
 
   const { name, address, notes, totalPrice, items } = req.body;
 
@@ -63,7 +51,7 @@ app.post('/api/orders', (req, res) => {
     return res.status(400).json({ success: false, message: 'Не всі обов\'язкові поля заповнені!' });
   }
 
-  const date = new Date().toISOString(); // Використовуємо стандартний формат дати
+  const date = new Date().toLocaleString();
 
   const newOrder = {
     name,
@@ -78,30 +66,13 @@ app.post('/api/orders', (req, res) => {
   orders.push(newOrder);
   saveOrders(orders);
 
-  // Відключаємо кешування для уникнення проблем
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-
   res.json({ success: true, message: 'Замовлення збережено!' });
 });
 
 // Маршрут для отримання всіх замовлень
 app.get('/api/orders', (req, res) => {
   const orders = readOrders();
-
-  // Відключаємо кешування для уникнення проблем
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-
   res.json(orders);
-});
-
-// Обробка помилок
-app.use((err, req, res, next) => {
-  console.error('Помилка сервера:', err.stack);
-  res.status(500).json({ success: false, message: 'Щось пішло не так на сервері!' });
 });
 
 // Запуск сервера
