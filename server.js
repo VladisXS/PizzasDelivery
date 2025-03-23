@@ -49,6 +49,12 @@ function saveOrders(orders) {
 app.post('/api/orders', (req, res) => {
   console.log('Отримано запит на збереження замовлення:', req.body);
   console.log('User-Agent:', req.headers['user-agent']);
+  console.log('Content-Type:', req.headers['content-type']);
+
+  // Перевірка, чи дані надійшли у форматі JSON
+  if (!req.is('application/json')) {
+    return res.status(400).json({ success: false, message: 'Невірний формат даних. Очікується JSON.' });
+  }
 
   const { name, address, notes, totalPrice, items } = req.body;
 
