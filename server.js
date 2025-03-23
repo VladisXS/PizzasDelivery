@@ -12,29 +12,26 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Шлях до файлу з замовленнями
-const ordersFilePath = path.join(__dirname, 'orders.json');
+const ordersFilePath = path.resolve(__dirname, 'orders.json'); // Використання path.resolve для більшої надійності
 
 // Функція для зчитування замовлень з файлу
 function readOrders() {
   if (!fs.existsSync(ordersFilePath)) {
-    fs.writeFileSync(ordersFilePath, '[]'); // Створюємо порожній файл, якщо його немає
+    fs.writeFileSync(ordersFilePath, '[]', 'utf-8'); // Створення UTF-8 файлу, якщо його немає
   }
   try {
     const data = fs.readFileSync(ordersFilePath, 'utf-8');
-    if (!data.trim()) {
-      return []; // Повертаємо пустий масив, якщо файл порожній
-    }
-    return JSON.parse(data);
+    return data.trim() ? JSON.parse(data) : []; // Перевірка на порожній файл
   } catch (err) {
     console.error('Помилка читання або парсингу файлу:', err);
-    return []; // Повертаємо пустий масив у разі помилки
+    return []; // У разі помилки повертається порожній масив
   }
 }
 
 // Функція для збереження замовлень у файл
 function saveOrders(orders) {
   try {
-    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
+    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf-8'); // Збереження з відступами
   } catch (err) {
     console.error('Помилка збереження файлу:', err);
   }
@@ -51,7 +48,7 @@ app.post('/api/orders', (req, res) => {
     return res.status(400).json({ success: false, message: 'Не всі обов\'язкові поля заповнені!' });
   }
 
-  const date = new Date().toLocaleString();
+  const date = new Date().toISOString(); // ISO формат для сумісності
 
   const newOrder = {
     name,
