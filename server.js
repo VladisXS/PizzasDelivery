@@ -12,26 +12,29 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Шлях до файлу з замовленнями
-const ordersFilePath = path.resolve(__dirname, 'orders.json');
+const ordersFilePath = path.join(__dirname, 'orders.json');
 
 // Функція для зчитування замовлень з файлу
 function readOrders() {
   if (!fs.existsSync(ordersFilePath)) {
-    fs.writeFileSync(ordersFilePath, '[]', 'utf-8'); // Створення файлу з правильним кодуванням
+    fs.writeFileSync(ordersFilePath, '[]'); // Створюємо порожній файл, якщо його немає
   }
   try {
     const data = fs.readFileSync(ordersFilePath, 'utf-8');
-    return data.trim() ? JSON.parse(data) : []; // Перевірка на порожній файл
+    if (!data.trim()) {
+      return []; // Повертаємо пустий масив, якщо файл порожній
+    }
+    return JSON.parse(data);
   } catch (err) {
     console.error('Помилка читання або парсингу файлу:', err);
-    return []; // Повертаємо порожній масив у разі помилки
+    return []; // Повертаємо пустий масив у разі помилки
   }
 }
 
 // Функція для збереження замовлень у файл
 function saveOrders(orders) {
   try {
-    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf-8'); // Додав UTF-8
+    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
   } catch (err) {
     console.error('Помилка збереження файлу:', err);
   }
@@ -48,7 +51,7 @@ app.post('/api/orders', (req, res) => {
     return res.status(400).json({ success: false, message: 'Не всі обов\'язкові поля заповнені!' });
   }
 
-  const date = new Date().toISOString(); // Уніфікований формат дати
+  const date = new Date().toLocaleString();
 
   const newOrder = {
     name,
@@ -59,30 +62,20 @@ app.post('/api/orders', (req, res) => {
     date,
   };
 
-  try {
-    const orders = readOrders();
-    orders.push(newOrder);
-    saveOrders(orders);
+  const orders = readOrders();
+  orders.push(newOrder);
+  saveOrders(orders);
 
-    res.json({ success: true, message: 'Замовлення збережено!' });
-  } catch (err) {
-    console.error('Помилка обробки замовлення:', err);
-    res.status(500).json({ success: false, message: 'Помилка на сервері!' });
-  }
+  res.json({ success: true, message: 'Замовлення збережено!' });
 });
 
 // Маршрут для отримання всіх замовлень
 app.get('/api/orders', (req, res) => {
-  try {
-    const orders = readOrders();
-    res.json(orders);
-  } catch (err) {
-    console.error('Помилка отримання замовлень:', err);
-    res.status(500).json({ success: false, message: 'Помилка на сервері!' });
-  }
+  const orders = readOrders();
+  res.json(orders);
 });
 
 // Запуск сервера
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
   console.log(`Сервер запущено на http://localhost:${port}`);
 });
