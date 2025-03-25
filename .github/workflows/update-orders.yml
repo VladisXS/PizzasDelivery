@@ -1,0 +1,13 @@
+name: Update Orders
+
+on:
+  repository_dispatch:
+    types: [new_order]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update orders.json
+        run: node update-orders.js
