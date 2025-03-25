@@ -7,6 +7,21 @@
     "items": [
       {
         "id": 4,
+        "name": "4 сири",
+        "price": 140,
+        "quantity": 1
+      }
+    ],
+    "date": "25.03.2025, 18:00:13"
+  },
+  {
+    "name": "Ð°",
+    "address": "Ð°",
+    "notes": "Ð°",
+    "totalPrice": 140,
+    "items": [
+      {
+        "id": 4,
         "price": 140,
         "quantity": 1
       }
@@ -56,9 +71,9 @@
     "date": "23.03.2025, 13:06:54"
   },
   {
-    "name": "а",
-    "address": "а",
-    "notes": "а",
+    "name": "Ð°",
+    "address": "Ð°",
+    "notes": "Ð°",
     "totalPrice": 140,
     "items": [
       {
