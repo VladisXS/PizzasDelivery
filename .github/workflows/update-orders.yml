@@ -1,13 +1,19 @@
-name: Update Orders
+name: Update Orders File
 
 on:
-  repository_dispatch:
-    types: [new_order]
+  push:
+    paths:
+      - 'orders.json'
 
 jobs:
-  update:
+  auto-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Update orders.json
-        run: node update-orders.js
+      - uses: actions/checkout@v3
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add orders.json
+          git commit -m "Auto-update orders.json"
+          git push
