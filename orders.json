@@ -12,12 +12,27 @@
         "quantity": 1
       }
     ],
-    "date": "25.03.2025, 18:00:13"
+    "date": "25.03.2025, 18:00:29"
   },
   {
     "name": "Ð°",
     "address": "Ð°",
     "notes": "Ð°",
+    "totalPrice": 140,
+    "items": [
+      {
+        "id": 4,
+        "name": "4 ÑÐ¸ÑÐ¸",
+        "price": 140,
+        "quantity": 1
+      }
+    ],
+    "date": "25.03.2025, 18:00:13"
+  },
+  {
+    "name": "ÃÂ°",
+    "address": "ÃÂ°",
+    "notes": "ÃÂ°",
     "totalPrice": 140,
     "items": [
       {
@@ -71,9 +86,9 @@
     "date": "23.03.2025, 13:06:54"
   },
   {
-    "name": "Ð°",
-    "address": "Ð°",
-    "notes": "Ð°",
+    "name": "ÃÂ°",
+    "address": "ÃÂ°",
+    "notes": "ÃÂ°",
     "totalPrice": 140,
     "items": [
       {
